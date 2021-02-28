@@ -1,0 +1,5 @@
+for i in {1..49}
+do
+	echo "$i"
+	java Parse.Main Tests/test$i.tig
+done
