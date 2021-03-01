@@ -48,7 +48,7 @@ non terminal Absyn.FieldVar     FieldVar;
 non terminal Absyn.ForExp       ForExp;
 non terminal Absyn.FunctionDec  FunctionDec;
 non terminal Absyn.IfExp		IfExp;
-non terminal Absyn.LetExp		LetExp
+non terminal Absyn.LetExp		LetExp;
 non terminal Absyn.NameTy       NameTy;
 non terminal Absyn.NilExp       NilExp;
 non terminal Absyn.OpExp        OpExp;
@@ -84,7 +84,7 @@ precedence nonassoc ASSIGN;
 precedence left OR;
 precedence left AND;
 precedence nonassoc EQ, NEQ, LT, LE, GT, GE;
-precedence left PLUS, MINUS, UMINUS;
+precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
 
 start with Exp;
