@@ -230,19 +230,17 @@ AssignExp ::= Var:v ASSIGN Exp:e
 
 ForExp ::= FOR:f ID:n ASSIGN Exp:e TO Exp:hi DO Exp:body
 		{: RESULT = new Absyn.ForExp(fleft, new Absyn.VarDec(nleft, sym(n), null, e), hi, body); :}
-	;
+	;//
 
-ArrayExp ::= ID:id LBRACK Exp:size RBRACK OF Exp:init
-		{: RESULT = new Absyn.ArrayExp(idleft, sym(id), size, init); :}
+ArrayExp ::= ID:id LBRACK Exp:size RBRACK OF Exp:ini
+		{: RESULT = new Absyn.ArrayExp(idleft, sym(id), size, ini); :}
 	;
 
 RecordExp ::= ID:id LBRACE FieldExpList:fel RBRACE
 		{: RESULT = new Absyn.RecordExp(idleft, sym(id), fel); :}
-	;
+	;//
 
 FieldExpList ::=
-	error
-	|
 		{: RESULT = null; :}
 	|ID:n EQ:eq Exp:e OptFieldExps: fld
 		{: RESULT = new Absyn.FieldExpList(eqleft, sym(n), e, fld); :}
