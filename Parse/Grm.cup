@@ -38,6 +38,7 @@ non terminal Absyn.Exp          Exp;
 non terminal Absyn.Var          Var;
 non terminal Absyn.ArrayTy      ArrayTy;
 non terminal Absyn.AssignExp    AssignExp;
+non terminal Absyn.ArrayExp	ArrayExp;
 non terminal Absyn.CallExp      CallExp;
 non terminal Absyn.Dec          Dec;
 non terminal Absyn.DecList      DecList;
@@ -195,7 +196,7 @@ Sequence ::=
 SeqTail ::=                                                          
         Exp:e
         	{: RESULT = new Absyn.ExpList(e,null); :}
-        | Squence: seq
+        | Sequence: seq
         	{: RESULT = seq; :}
         ;
 
@@ -241,8 +242,6 @@ RecordExp ::= ID:id LBRACE FieldExpList:fel RBRACE
 	;
 
 FieldExpList ::=
-	error
-	|
 		{: RESULT = null; :}
 	|ID:n EQ:eq Exp:e OptFieldExps: fld
 		{: RESULT = new Absyn.FieldExpList(eqleft, sym(n), e, fld); :}
