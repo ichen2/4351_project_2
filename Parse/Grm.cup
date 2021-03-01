@@ -183,34 +183,64 @@ Dec ::=
 	error
 	|FunctionDec:fd
 	{: RESULT = fd; :}
-	|VAR:va ID:n nameType:ntype ASSIGN Exp:e
-	{: RESULT = new Absyn.VarDec(valeft,sym(n),ntype,e); :}
-	| typeDec:t
+	|VarDec:vd
+	{: RESULT = vd; :}
+	| TypeDec:t
 	{: RESULT = t; :}
 	;
 
 VarDec ::= VAR:v ID:id OptionalTypeDec:otd ASSIGN Exp:e
-	{: RESULT = new Absyn.VarDec(vleft, sym(id), itd, e); :}
+	{: RESULT = new Absyn.VarDec(vleft, sym(id), otd, e); :}
 	;
+
+
 
 OptionalTypeDec ::= NameTy:nt
 			{:RESULT = nt; :}
 		| {: RESULT = null; :}
 	;
 
+FunctionDec ::=
+	FUNCTION:fu ID:n LPAREN FieldList:fld RPAREN NameTy:Ntype EQ Exp:e optFunctions:f                     //come back to this...  Should I replace Ntype with OtionalTypeDec
+		{: RESULT = new Absyn.FunctionDec(fuleft,sym(n),fld,Ntype,e,f); :}
+	;
+
+optFunctions ::= {:RESULT = null; :}
+	| functionDec:fundec
+		{: RESULT = fundec; :}
+	;
 
 
-//ignore after here
 
 TypeDec ::=
 	TYPE:ty1 ID:n EQ:eq type:ty2 optTypes:ty3
 	{: RESULT = new Absyn.TypeDec(ty1left,sym(n), ty2, ty3); :}
 	;
 
-functionDec ::=
-	FUNCTION:fu ID:n LPAREN fields:fld RPAREN nameType:Ntype EQ Exp:e optFunctions:f
-	{: RESULT = new Absyn.FunctionDec(fuleft,sym(n),fld,Ntype,e,f); :}
+optTypes ::= {: RESULT = null; :}
+	|typeDec:t
+		{: RESULT = t; :}
 	;
+
+Ty ::= ID:n                                                                        //not sure why calling absyn.Ty doesnt work
+		{: RESULT = new Absyn.NameTy(nleft, sym(n)); :}
+	| RecordTy:rt
+		{: RESULT = rt; :}
+	| ArrayTy:at
+		{: RESULT = at; :}
+	;
+
+ArrayTy ::= ARRAY:a OF ID:id
+			{: RESULT = new Absyn.ArrayTy(aleft, sym(id)); :}
+	;
+
+RecordTy ::= LBRACE:lb FieldList:fl RBRACE
+			{: RESULT = new Absyn.RecordTy(lbleft, fl); :}
+	;
+
+
+//ignore after here
+
 
 arguments ::=
 	| Exp:e optArguments:args
@@ -251,10 +281,7 @@ seqTail ::=
         {: RESULT = seq; :}
         ;
 
-optFunctions ::=
-	| functionDec: fundec
-	{: RESULT = fundec; :}
-	;
+
 
 optFields ::=
 	error
@@ -263,10 +290,7 @@ optFields ::=
 	{: RESULT = new Absyn.FieldList(comleft, sym(n1), sym(n2), fld); :}
 	;
 
-optTypes ::=
-	|typeDec: t
-	{: RESULT = t; :}
-	;
+
 
 fields ::=
 	error
@@ -282,14 +306,7 @@ nameType ::=
 	{: RESULT = new Absyn.NameTy(colleft, sym(n)); :}
 	;
 
-type ::=
-	ID:n
-	{: RESULT = new Absyn.NameTy(nleft, sym(n)); :}
-	| LBRACE:lbrace fields:fld RBRACE
-	{: RESULT = new Absyn.RecordTy(lbraceleft, fld); :}
-	| ARRAY: a OF ID:n
-	{: RESULT = new Absyn.ArrayTy(aleft, sym(n)); :}
-	;
+
 
 empty ::=
 
