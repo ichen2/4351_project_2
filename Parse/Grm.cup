@@ -217,8 +217,6 @@ Arguments ::=
 	;
 
 OptArguments ::=                                                   
-	error
-	|
 		{: RESULT = null; :}
 	| COMMA Exp:e OptArguments:args
 		{: RESULT = new Absyn.ExpList(e, args); :}
@@ -241,16 +239,12 @@ RecordExp ::= ID:id LBRACE FieldExpList:fel RBRACE
 	;
 
 FieldExpList ::=
-	error
-	|
 		{: RESULT = null; :}
 	|ID:n EQ:eq Exp:e OptFieldExps: fld
 		{: RESULT = new Absyn.FieldExpList(eqleft, sym(n), e, fld); :}
 	;
 
-OptFieldExps ::=                                                                             
-	error
-	|
+OptFieldExps ::=                                                                            
 		{: RESULT = null; :}
 	| COMMA:com ID:n Exp:e OptFieldExps:fld
 		{: RESULT = new Absyn.FieldExpList(comleft, sym(n), e, fld); :}
@@ -287,13 +281,12 @@ DecList ::=
 	;
 
 Dec ::=
-	error
-	|FunctionDec:fd
-	{: RESULT = fd; :}
+	FunctionDec:fd
+		{: RESULT = fd; :}
 	|VarDec:vd
-	{: RESULT = vd; :}
+		{: RESULT = vd; :}
 	| TypeDec:t
-	{: RESULT = t; :}
+		{: RESULT = t; :}
 	;
 
 VarDec ::= VAR:v ID:id OptionalTypeDec:otd ASSIGN Exp:e
@@ -346,8 +339,6 @@ RecordTy ::= LBRACE:lb FieldList:fl RBRACE
 	;
 
 optFieldList ::=                                                           
-	error
-	|
 		{: RESULT = null; :}
 	| COMMA:com ID:n1 COLON ID:n2 optFields:fld
 		{: RESULT = new Absyn.FieldList(comleft, sym(n1), sym(n2), fld); :}
@@ -356,16 +347,12 @@ optFieldList ::=
 
 
 FieldList ::=
-	error
-	|
 		{: RESULT = null; :}
 	| ID:n1 COLON:col ID:n2 optFields:fld
 		{: RESULT = new Absyn.FieldList(colleft, sym(n1), sym(n2), fld); :}
 	;
 
 NameTy ::=
-	error
-	|
 		{: RESULT = null; :}
 	| COLON:col ID:n
 		{: RESULT = new Absyn.NameTy(colleft, sym(n)); :}
