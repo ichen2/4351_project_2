@@ -229,7 +229,7 @@ AssignExp ::= Var:v ASSIGN Exp:e
 	;
 
 ForExp ::= FOR:f ID:n ASSIGN Exp:e TO Exp:hi DO Exp:body
-		{: RESULT = new Absyn.ForExp(fleft, new Absyn.VarDec(nleft, sym(n), null, e), hi, body); :}
+		{: RESULT = new Absyn.ForExp(fleft, new Absyn.VarDec(nleft, sym(n), null, e)), hi, body); :}
 	;//
 
 ArrayExp ::= ID:id LBRACK Exp:size RBRACK OF Exp:ini
