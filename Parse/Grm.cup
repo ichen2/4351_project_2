@@ -60,6 +60,7 @@ non terminal Absyn.Ty           Ty;
 non terminal Absyn.TypeDec      TypeDec;
 non terminal Absyn.VarDec       VarDec;
 non terminal Absyn.VarExp       VarExp;
+non terminal Absyn.SubscriptVar	SubscriptVar;
 non terminal Absyn.WhileExp     WhileExp;
 
 
@@ -279,9 +280,9 @@ FieldVar ::=
 	;
 
 DecList ::=
-	dec:d
+	Dec:d
 	{: RESULT = new Absyn.DecList(d,null); :}
-	|dec:d decList:ds
+	|Dec:d DecList:ds
 	{: RESULT = new Absyn.DecList(d,ds); :}
 	;
 
@@ -312,19 +313,19 @@ FunctionDec ::=
 	;
 
 optFunctions ::= {:RESULT = null; :}                                              
-	| functionDec:fundec
+	| FunctionDec:fundec
 		{: RESULT = fundec; :}
 	;
 
 
 
 TypeDec ::=
-	TYPE:ty1 ID:n EQ:eq type:ty2 optTypes:ty3
+	TYPE:ty1 ID:n EQ:eq Ty:ty2 optTypes:ty3
 	{: RESULT = new Absyn.TypeDec(ty1left,sym(n), ty2, ty3); :}
 	;
 
 optTypes ::= {: RESULT = null; :}                                                 
-	|typeDec:t
+	| TypeDec:t
 		{: RESULT = t; :}
 	;
 
@@ -348,7 +349,7 @@ optFieldList ::=
 	error
 	|
 		{: RESULT = null; :}
-	| COMMA:com ID:n1 COLON ID:n2 optFields:fld
+	| COMMA:com ID:n1 COLON ID:n2 optFieldList:fld
 		{: RESULT = new Absyn.FieldList(comleft, sym(n1), sym(n2), fld); :}
 	;
 
@@ -358,13 +359,11 @@ FieldList ::=
 	error
 	|
 		{: RESULT = null; :}
-	| ID:n1 COLON:col ID:n2 optFields:fld
+	| ID:n1 COLON:col ID:n2 optFieldList:fld
 		{: RESULT = new Absyn.FieldList(colleft, sym(n1), sym(n2), fld); :}
 	;
 
 NameTy ::=
-	error
-	|
 		{: RESULT = null; :}
 	| COLON:col ID:n
 		{: RESULT = new Absyn.NameTy(colleft, sym(n)); :}
