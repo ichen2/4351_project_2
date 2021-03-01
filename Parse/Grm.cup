@@ -38,6 +38,7 @@ non terminal Absyn.Exp          Exp;
 non terminal Absyn.Var          Var;
 non terminal Absyn.ArrayTy      ArrayTy;
 non terminal Absyn.AssignExp    AssignExp;
+non terminal Absyn.ArrayExp	ArrayExp;
 non terminal Absyn.CallExp      CallExp;
 non terminal Absyn.Dec          Dec;
 non terminal Absyn.DecList      DecList;
@@ -48,7 +49,7 @@ non terminal Absyn.FieldVar     FieldVar;
 non terminal Absyn.ForExp       ForExp;
 non terminal Absyn.FunctionDec  FunctionDec;
 non terminal Absyn.IfExp		IfExp;
-non terminal Absyn.LetExp		LetExp
+non terminal Absyn.LetExp		LetExp;
 non terminal Absyn.NameTy       NameTy;
 non terminal Absyn.NilExp       NilExp;
 non terminal Absyn.OpExp        OpExp;
@@ -84,7 +85,7 @@ precedence nonassoc ASSIGN;
 precedence left OR;
 precedence left AND;
 precedence nonassoc EQ, NEQ, LT, LE, GT, GE;
-precedence left PLUS, MINUS, UMINUS;
+precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
 
 start with Exp;
@@ -195,7 +196,7 @@ Sequence ::=
 SeqTail ::=                                                          
         Exp:e
         	{: RESULT = new Absyn.ExpList(e,null); :}
-        | Squence: seq
+        | Sequence: seq
         	{: RESULT = seq; :}
         ;
 
@@ -324,7 +325,7 @@ optTypes ::= {: RESULT = null; :}
 
 Ty ::= ID:n                                                                        //not sure why calling absyn.Ty doesnt work
 		{: RESULT = new Absyn.NameTy(nleft, sym(n)); :}
-	| RecordTy:rt
+	| RecordTy:r
 		{: RESULT = rt; :}
 	| ArrayTy:at
 		{: RESULT = at; :}
