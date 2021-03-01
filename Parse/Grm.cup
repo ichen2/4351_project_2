@@ -291,19 +291,19 @@ Dec ::=
 	{: RESULT = t; :}
 	;
 
-VarDec ::= VAR:v ID:id OptionalTypeDec:otd ASSIGN Exp:e
+VarDec ::= VAR:v ID:id NameTy:otd ASSIGN Exp:e
 	{: RESULT = new Absyn.VarDec(vleft, sym(id), otd, e); :}
 	;
 
 
 
-OptionalTypeDec ::= NameTy:nt
+/*OptionalTypeDec ::= NameTy:nt
 			{:RESULT = nt; :}
 		| 
-	;
+	;*/
 
 FunctionDec ::=
-	FUNCTION:fu ID:n LPAREN FieldList:fld RPAREN OptionalTypeDec:otd EQ Exp:e optFunctions:f                     
+	FUNCTION:fu ID:n LPAREN FieldList:fld RPAREN NameTy:otd EQ Exp:e optFunctions:f                     
 		{: RESULT = new Absyn.FunctionDec(fuleft,sym(n),fld,otd,e,f); :}
 	;
 
