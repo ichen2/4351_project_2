@@ -117,7 +117,7 @@ Exp ::= error:e                                    //if it is an easy one line o
 		{: RESULT = le; :}
 
 	| CallExp:ce 
-		{: RESULT = cs; :}
+		{: RESULT = ce; :}
 
 	| NIL:n
 		{: RESULT = new Absyn.NilExp(nleft); :}
@@ -137,15 +137,14 @@ Exp ::= error:e                                    //if it is an easy one line o
 
 
 IfExp ::= IF:i Exp:e THEN Exp:e2 ElsePart:ep                                                
-		{: RESULT = new Abssyn.IfExp(ileft, e, e2, ep); :}
+		{: RESULT = new Absyn.IfExp(ileft, e, e2, ep); :}
 	| Exp:le AND Exp:re               //left expression and right expression
 		{: RESULT = new Absyn.IfExp(leleft, le, re, new Absyn.IntExp(leleft, 0)); :}
 	| Exp:le OR Exp:re
-		{: RESULT = new Absyn.IfExp(leleft, le, new Absyn.IntExp(leleft, 1) re); :}
+		{: RESULT = new Absyn.IfExp(leleft, le, new Absyn.IntExp(leleft, 1), re); :}
 	;
 
 ElsePart ::= 
-		{: RESULT = null; :}
 	| ELSE Exp:e
 		{: RESULT = e; :}
 	;
@@ -156,7 +155,7 @@ OpExp ::= Exp:le GT Exp:re         //left expression GT right expression
 	| Exp:le PLUS Exp:re
 		{: RESULT = new Absyn.OpExp(leleft, le, Absyn.OpExp.PLUS, re); :}
 	| MINUS:m Exp:e                                                                                        //when a number is negative
-		{: RESULT = new Absyn.OpExp(mleft, new Absyn.IntExp(mleft, 0), Absyn.OpExp.Minus, e); :}
+		{: RESULT = new Absyn.OpExp(mleft, new Absyn.IntExp(mleft, 0), Absyn.OpExp.MINUS, e); :}
 	| Exp:le MINUS Exp:re
 		{: RESULT = new Absyn.OpExp(leleft, le, Absyn.OpExp.MINUS, re); :}
 	| Exp:le TIMES Exp:re
@@ -172,17 +171,16 @@ OpExp ::= Exp:le GT Exp:re         //left expression GT right expression
 	| Exp:le EQ Exp:re
 		{: RESULT = new Absyn.OpExp(leleft, le, Absyn.OpExp.EQ, re); :}
 	| Exp:le NEQ Exp:re
-		{: RESULT = new Absyn.OpExp(leleft, le, Absyn.OpExp.NEQ, re); :}
+		{: RESULT = new Absyn.OpExp(leleft, le, Absyn.OpExp.NE, re); :}
 	;
 
-SeqExp ::= Exp:e
+SeqExp ::= SeqExp:e
 		{: RESULT = e; :}
 	|ExpList:el
 		{: RESULT = new Absyn.SeqExp(elleft, el); :}
 	;
 
 ExpList ::=                                                          
-		{: RESULT = null; :}
 	| Exp: e 
           {: RESULT = new Absyn.ExpList(e, null); :}
 	| Sequence:seq
@@ -202,7 +200,7 @@ SeqTail ::=
         ;
 
 WhileExp ::= WHILE:w Exp:test DO Exp:body
-			{: RESULT = new Absyn.WhileExp(wlefft, test, body); :}
+			{: RESULT = new Absyn.WhileExp(wleft, test, body); :}
 		;
 
 LetExp ::= LET:l DecList:dl IN SeqExp:se END
@@ -221,17 +219,16 @@ Arguments ::=
 OptArguments ::=                                                   
 	error
 	|
-		{: RESULT = null; :}
 	| COMMA Exp:e OptArguments:args
 		{: RESULT = new Absyn.ExpList(e, args); :}
 	;
 
 AssignExp ::= Var:v ASSIGN Exp:e
-		{: RESULT = new Absyn.AssignExp(vlift, v, e); :}
+		{: RESULT = new Absyn.AssignExp(vleft, v, e); :}
 	;
 
 ForExp ::= FOR:f ID:n ASSIGN Exp:e TO Exp:hi DO Exp:body
-		{: RESULT = new Absyn.ForExp(fleft, new Absyn.VarDec(nleft, sym(n), null, e)), hi, body); :}
+		{: RESULT = new Absyn.ForExp(fleft, new Absyn.VarDec(nleft, sym(n), null, e), hi, body); :}
 	;//
 
 ArrayExp ::= ID:id LBRACK Exp:size RBRACK OF Exp:ini
@@ -243,7 +240,6 @@ RecordExp ::= ID:id LBRACE FieldExpList:fel RBRACE
 	;//
 
 FieldExpList ::=
-		{: RESULT = null; :}
 	|ID:n EQ:eq Exp:e OptFieldExps: fld
 		{: RESULT = new Absyn.FieldExpList(eqleft, sym(n), e, fld); :}
 	;
@@ -251,7 +247,6 @@ FieldExpList ::=
 OptFieldExps ::=                                                                             
 	error
 	|
-		{: RESULT = null; :}
 	| COMMA:com ID:n Exp:e OptFieldExps:fld
 		{: RESULT = new Absyn.FieldExpList(comleft, sym(n), e, fld); :}
 	;
@@ -304,7 +299,7 @@ VarDec ::= VAR:v ID:id OptionalTypeDec:otd ASSIGN Exp:e
 
 OptionalTypeDec ::= NameTy:nt
 			{:RESULT = nt; :}
-		| {: RESULT = null; :}
+		| 
 	;
 
 FunctionDec ::=
@@ -312,7 +307,7 @@ FunctionDec ::=
 		{: RESULT = new Absyn.FunctionDec(fuleft,sym(n),fld,otd,e,f); :}
 	;
 
-optFunctions ::= {:RESULT = null; :}                                              
+optFunctions ::=                                        
 	| FunctionDec:fundec
 		{: RESULT = fundec; :}
 	;
@@ -324,7 +319,7 @@ TypeDec ::=
 	{: RESULT = new Absyn.TypeDec(ty1left,sym(n), ty2, ty3); :}
 	;
 
-optTypes ::= {: RESULT = null; :}                                                 
+optTypes ::=                                               
 	| TypeDec:t
 		{: RESULT = t; :}
 	;
@@ -348,7 +343,6 @@ RecordTy ::= LBRACE:lb FieldList:fl RBRACE
 optFieldList ::=                                                           
 	error
 	|
-		{: RESULT = null; :}
 	| COMMA:com ID:n1 COLON ID:n2 optFieldList:fld
 		{: RESULT = new Absyn.FieldList(comleft, sym(n1), sym(n2), fld); :}
 	;
@@ -358,13 +352,11 @@ optFieldList ::=
 FieldList ::=
 	error
 	|
-		{: RESULT = null; :}
 	| ID:n1 COLON:col ID:n2 optFieldList:fld
 		{: RESULT = new Absyn.FieldList(colleft, sym(n1), sym(n2), fld); :}
 	;
 
 NameTy ::=
-		{: RESULT = null; :}
 	| COLON:col ID:n
 		{: RESULT = new Absyn.NameTy(colleft, sym(n)); :}
 	;
